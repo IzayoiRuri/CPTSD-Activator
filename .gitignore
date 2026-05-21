@@ -1,0 +1,26 @@
+# Build output
+build/
+.dart_tool/
+.gradle/
+*.apk
+*.jks
+*.keystore
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Flutter
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated
+*.g.dart
+*.freezed.dart
