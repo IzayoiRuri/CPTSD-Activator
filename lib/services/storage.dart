@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/task.dart';
 
 class StorageService extends ChangeNotifier {
   static final StorageService instance = StorageService._();
   StorageService._();
 
-  String get _basePath => '/home/agent/activate/data';
+  String? _basePath;
   String get _labelsPath => '$_basePath/labels.json';
 
   // 当前任务列表
@@ -27,7 +28,9 @@ class StorageService extends ChangeNotifier {
   AppMode get currentMode => _currentMode;
 
   Future<void> init() async {
-    await Directory(_basePath).create(recursive: true);
+    final dir = await getApplicationDocumentsDirectory();
+    _basePath = '${dir.path}/activate_data';
+    await Directory(_basePath!).create(recursive: true);
     await _loadAll();
   }
 
@@ -61,7 +64,7 @@ class StorageService extends ChangeNotifier {
   }
 
   Future<void> _loadHistory() async {
-    final dir = Directory(_basePath);
+    final dir = Directory(_basePath!);
     final files = await dir.list().toList();
     final today = _todayKey();
     for (final f in files) {
@@ -90,7 +93,6 @@ class StorageService extends ChangeNotifier {
   }
 
   Future<void> save() async {
-    // Auto-archive: if any task is from a different day, move to history
     final today = _todayKey();
     final todayTasks = <Task>[];
     final archiveMap = <String, List<Task>>{};
@@ -104,19 +106,16 @@ class StorageService extends ChangeNotifier {
       }
     }
 
-    // Save archived tasks to their date files
     for (final entry in archiveMap.entries) {
       final file = File('$_basePath/${entry.key}.json');
       await file.writeAsString(jsonEncode(entry.value.map((t) => t.toJson()).toList()));
       _history[entry.key] = entry.value;
     }
 
-    // Save today
     _tasks = todayTasks;
     final file = File('$_basePath/${_todayKey()}.json');
     await file.writeAsString(jsonEncode(_tasks.map((t) => t.toJson()).toList()));
 
-    // Save labels
     await File(_labelsPath)
         .writeAsString(jsonEncode(_customLabels.map((l) => {'id': l.id, 'name': l.name, 'effort': l.effort.name}).toList()));
 

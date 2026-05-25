@@ -112,7 +112,7 @@ class _ActiveTaskCardState extends State<ActiveTaskCard> {
                 Text(
                   _formatTime(_remainingSeconds),
                   style: TextStyle(
-                    fontFamily: 'JetBrains Mono',
+                    fontFamily: 'monospace',
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: isUrgent ? AppTheme.danger : accent,
