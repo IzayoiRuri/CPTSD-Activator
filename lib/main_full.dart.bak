@@ -11,12 +11,14 @@ void main() {
 
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
+      // Also log to a file for debugging
     };
 
     try {
       await StorageService.instance.init();
     } catch (e, stack) {
       debugPrint('Storage init failed: $e\n$stack');
+      // Continue anyway — app should still show UI
     }
 
     runApp(const ActivateApp());

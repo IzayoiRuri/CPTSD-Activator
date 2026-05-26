@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import '../models/task.dart';
 
 class StorageService extends ChangeNotifier {
@@ -28,8 +27,8 @@ class StorageService extends ChangeNotifier {
   AppMode get currentMode => _currentMode;
 
   Future<void> init() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _basePath = '${dir.path}/activate_data';
+    // Use relative path — Flutter resolves to app sandbox automatically
+    _basePath = 'activate_data';
     await Directory(_basePath!).create(recursive: true);
     await _loadAll();
   }

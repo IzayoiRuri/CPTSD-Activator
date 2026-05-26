@@ -1,4 +1,4 @@
-package com.activate.activate
+package com.activate.activate_app
 
 import io.flutter.embedding.android.FlutterActivity
 
